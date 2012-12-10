@@ -23,7 +23,7 @@ import java.io.IOException;
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
  * and a new {@link HelloWorldBuilder} is created. The created
  * instance is persisted to the project configuration XML by using
- * XStream, so this allows you to use instance fields (like {@link #name})
+ * XStream, so this allows you to use instance fields (like {@link #url})
  * to remember the configuration.
  *
  * <p>
@@ -34,31 +34,46 @@ import java.io.IOException;
  */
 public class HelloWorldBuilder extends Builder {
 
-    private final String name;
+    private final String url, user, password, title, body;
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
+	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public HelloWorldBuilder(String name) {
-        this.name = name;
+    public HelloWorldBuilder(String url, String user, String password, String title, String body) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        this.title = title;
+        this.body = body;
     }
 
     /**
      * We'll use this from the <tt>config.jelly</tt>.
      */
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
+    public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getBody() {
+		return body;
+	}
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a build.
 
-        // This also shows how you can consult the global configuration of the builder
-        if (getDescriptor().getUseFrench())
-            listener.getLogger().println("Bonjour, "+name+"!");
-        else
-            listener.getLogger().println("Hello, "+name+"!");
+        listener.getLogger().println("Hello, "+url+"!");
         return true;
     }
 
@@ -97,7 +112,7 @@ public class HelloWorldBuilder extends Builder {
          * @return
          *      Indicates the outcome of the validation. This is sent to the browser.
          */
-        public FormValidation doCheckName(@QueryParameter String value)
+        public FormValidation doCheckUrl(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error("Please set a name");
