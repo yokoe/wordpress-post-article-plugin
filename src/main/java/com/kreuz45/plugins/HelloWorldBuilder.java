@@ -1,19 +1,31 @@
 package com.kreuz45.plugins;
-import hudson.Launcher;
 import hudson.Extension;
-import hudson.util.FormValidation;
-import hudson.model.AbstractBuild;
+import hudson.Launcher;
 import hudson.model.BuildListener;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
-import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.QueryParameter;
+import hudson.tasks.Builder;
+import hudson.util.FormValidation;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.ServletException;
-import java.io.IOException;
+
+import net.sf.json.JSONObject;
+
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Sample {@link Builder}.
@@ -74,6 +86,37 @@ public class HelloWorldBuilder extends Builder {
         // Since this is a dummy, we just say 'hello world' and call that a build.
 
         listener.getLogger().println("Hello, "+url+"!");
+        try {
+        	XmlRpcClient client = new XmlRpcClient();
+            XmlRpcClientConfigImpl conf = new XmlRpcClientConfigImpl();
+			conf.setServerURL(new URL(url));
+			client.setConfig(conf);
+			
+			List params = new ArrayList();
+			params.add(1);
+			params.add(this.user);
+			params.add(this.password);
+			
+			Hashtable article = new Hashtable();
+			article.put("post_title", this.title);
+			article.put("post_content", this.body);
+			
+			params.add(article);
+			params.add(1);
+			
+			// 実行
+			HashMap ret = (HashMap) client.execute("wp.newPost", params);
+			// サーバからのレスポンスを出力
+			System.out.println("ret=" + ret);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XmlRpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
         return true;
     }
 
