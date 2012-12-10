@@ -105,7 +105,7 @@ public class HelloWorldBuilder extends Builder {
 			params.add(1);
 			
 			// 実行
-			HashMap ret = (HashMap) client.execute("wp.newPost", params);
+			String ret = (String) client.execute("wp.newPost", params);
 			// サーバからのレスポンスを出力
 			System.out.println("ret=" + ret);
 		} catch (MalformedURLException e) {
