@@ -27,4 +27,9 @@
   <f:entry title="Publish" field="publish">
     <f:checkbox />
   </f:entry>
+  <f:advanced>
+    <f:entry title="Category (Int ID)" field="category" description="Use comma(,) to specify multiple values">
+      <f:textbox />
+    </f:entry>
+  </f:advanced>
 </j:jelly>

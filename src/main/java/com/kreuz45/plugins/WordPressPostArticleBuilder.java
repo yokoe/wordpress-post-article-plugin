@@ -46,18 +46,19 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class WordPressPostArticleBuilder extends Builder {
 
-    private final String url, user, password, title, body;
+    private final String url, user, password, title, body, category;
     private Boolean publish;
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body, Boolean publish) {
+    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body, Boolean publish, String category) {
         this.url = url;
         this.user = user;
         this.password = password;
         this.title = title;
         this.body = body;
         this.publish = publish;
+        this.category = category;
     }
 
     /**
@@ -85,6 +86,10 @@ public class WordPressPostArticleBuilder extends Builder {
 	public Boolean getPublish() {
 		return publish;
 	}
+	
+	public String getCategory() {
+		return category;
+	}
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
@@ -107,16 +112,24 @@ public class WordPressPostArticleBuilder extends Builder {
 			params.add(this.user);
 			params.add(this.password);
 			
-			Hashtable article = new Hashtable();
-			article.put("post_title", vars.expand(this.title));
-			article.put("post_content", vars.expand(this.body));
+			Hashtable content = new Hashtable();
+			content.put("post_title", vars.expand(this.title));
+			content.put("post_content", vars.expand(this.body));
 			
 			if (this.publish) {
-				article.put("post_status", "publish");
+				content.put("post_status", "publish");
+			}
+			if (this.category != null && this.category.length() > 0) {
+				Hashtable terms = new Hashtable();
+				
+				String[] categories = this.category.split(",");
+				terms.put("category", categories);
+				content.put("terms", terms);
 			}
 			
-			params.add(article);
-			params.add(1);
+			params.add(content);
+			
+			listener.getLogger().println("Params: " + params);
 			
 			// é¿çs
 			String ret = (String) client.execute("wp.newPost", params);
