@@ -1,4 +1,5 @@
 package com.kreuz45.plugins;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -87,6 +87,8 @@ public class HelloWorldBuilder extends Builder {
 
         listener.getLogger().println("Hello, "+url+"!");
         try {
+        	EnvVars vars = build.getEnvironment(listener);
+        	
         	XmlRpcClient client = new XmlRpcClient();
             XmlRpcClientConfigImpl conf = new XmlRpcClientConfigImpl();
 			conf.setServerURL(new URL(url));
@@ -98,8 +100,8 @@ public class HelloWorldBuilder extends Builder {
 			params.add(this.password);
 			
 			Hashtable article = new Hashtable();
-			article.put("post_title", this.title);
-			article.put("post_content", this.body);
+			article.put("post_title", vars.expand(this.title));
+			article.put("post_content", vars.expand(this.body));
 			
 			params.add(article);
 			params.add(1);
@@ -112,6 +114,12 @@ public class HelloWorldBuilder extends Builder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XmlRpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
