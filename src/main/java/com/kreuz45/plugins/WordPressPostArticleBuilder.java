@@ -129,8 +129,6 @@ public class WordPressPostArticleBuilder extends Builder {
 			
 			params.add(content);
 			
-			listener.getLogger().println("Params: " + params);
-			
 			// 実行
 			String ret = (String) client.execute("wp.newPost", params);
 			// サーバからのレスポンスを出力
