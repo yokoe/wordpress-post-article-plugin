@@ -47,15 +47,17 @@ import org.kohsuke.stapler.StaplerRequest;
 public class WordPressPostArticleBuilder extends Builder {
 
     private final String url, user, password, title, body;
+    private Boolean publish;
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body) {
+    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body, Boolean publish) {
         this.url = url;
         this.user = user;
         this.password = password;
         this.title = title;
         this.body = body;
+        this.publish = publish;
     }
 
     /**
@@ -79,6 +81,10 @@ public class WordPressPostArticleBuilder extends Builder {
 	public String getBody() {
 		return body;
 	}
+	
+	public Boolean getPublish() {
+		return publish;
+	}
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
@@ -89,6 +95,8 @@ public class WordPressPostArticleBuilder extends Builder {
         try {
         	EnvVars vars = build.getEnvironment(listener);
         	
+        	// WordPress XML-RPC API wp.newPost
+        	// http://codex.wordpress.org/XML-RPC_WordPress_API/Posts#wp.newPost
         	XmlRpcClient client = new XmlRpcClient();
             XmlRpcClientConfigImpl conf = new XmlRpcClientConfigImpl();
 			conf.setServerURL(new URL(url));
@@ -102,6 +110,10 @@ public class WordPressPostArticleBuilder extends Builder {
 			Hashtable article = new Hashtable();
 			article.put("post_title", vars.expand(this.title));
 			article.put("post_content", vars.expand(this.body));
+			
+			if (this.publish) {
+				article.put("post_status", "publish");
+			}
 			
 			params.add(article);
 			params.add(1);

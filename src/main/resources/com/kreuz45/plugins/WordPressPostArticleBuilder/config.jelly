@@ -24,4 +24,7 @@
   <f:entry title="Body" field="body">
     <f:textarea />
   </f:entry>
+  <f:entry title="Publish" field="publish">
+    <f:checkbox />
+  </f:entry>
 </j:jelly>
