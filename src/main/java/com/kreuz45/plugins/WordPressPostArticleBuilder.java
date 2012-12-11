@@ -33,7 +33,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * <p>
  * When the user configures the project and enables this builder,
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link HelloWorldBuilder} is created. The created
+ * and a new {@link WordPressPostArticleBuilder} is created. The created
  * instance is persisted to the project configuration XML by using
  * XStream, so this allows you to use instance fields (like {@link #url})
  * to remember the configuration.
@@ -44,13 +44,13 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Kohsuke Kawaguchi
  */
-public class HelloWorldBuilder extends Builder {
+public class WordPressPostArticleBuilder extends Builder {
 
     private final String url, user, password, title, body;
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public HelloWorldBuilder(String url, String user, String password, String title, String body) {
+    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body) {
         this.url = url;
         this.user = user;
         this.password = password;
@@ -137,7 +137,7 @@ public class HelloWorldBuilder extends Builder {
     }
 
     /**
-     * Descriptor for {@link HelloWorldBuilder}. Used as a singleton.
+     * Descriptor for {@link WordPressPostArticleBuilder}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *
      * <p>
