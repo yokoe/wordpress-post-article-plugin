@@ -31,5 +31,11 @@
     <f:entry title="Category (Int ID)" field="category" description="Use comma(,) to specify multiple values">
       <f:textbox />
     </f:entry>
+    <f:entry title="BasicAuth Username" field="basic_user_name">
+      <f:textbox />
+    </f:entry>
+    <f:entry title="BasicAuth Password" field="basic_password">
+      <f:password />
+    </f:entry>
   </f:advanced>
 </j:jelly>

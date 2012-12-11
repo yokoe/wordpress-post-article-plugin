@@ -46,12 +46,13 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class WordPressPostArticleBuilder extends Builder {
 
-    private final String url, user, password, title, body, category;
-    private Boolean publish;
+    private final String url, user, password, title, body, category, basic_user_name, basic_password;
+
+	private Boolean publish;
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body, Boolean publish, String category) {
+    public WordPressPostArticleBuilder(String url, String user, String password, String title, String body, Boolean publish, String category, String basic_user_name, String basic_password) {
         this.url = url;
         this.user = user;
         this.password = password;
@@ -59,6 +60,8 @@ public class WordPressPostArticleBuilder extends Builder {
         this.body = body;
         this.publish = publish;
         this.category = category;
+        this.basic_user_name = basic_user_name;
+        this.basic_password = basic_password;
     }
 
     /**
@@ -90,6 +93,14 @@ public class WordPressPostArticleBuilder extends Builder {
 	public String getCategory() {
 		return category;
 	}
+	
+	public String getBasic_user_name() {
+		return basic_user_name;
+	}
+
+	public String getBasic_password() {
+		return basic_password;
+	}
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
@@ -105,6 +116,12 @@ public class WordPressPostArticleBuilder extends Builder {
         	XmlRpcClient client = new XmlRpcClient();
             XmlRpcClientConfigImpl conf = new XmlRpcClientConfigImpl();
 			conf.setServerURL(new URL(url));
+			if (this.basic_user_name != null && this.basic_user_name.length() > 0 &&
+					this.basic_password != null && this.basic_password.length() > 0) {
+				conf.setBasicUserName(this.basic_user_name);
+				conf.setBasicPassword(this.basic_password);
+			}
+			
 			client.setConfig(conf);
 			
 			List params = new ArrayList();
