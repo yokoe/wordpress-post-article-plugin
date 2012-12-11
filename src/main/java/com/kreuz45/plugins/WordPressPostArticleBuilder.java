@@ -206,7 +206,7 @@ public class WordPressPostArticleBuilder extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "Say hello world";
+            return "Post an article to WordPress";
         }
 
         @Override
