@@ -1,0 +1,41 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!--
+    Creates a text field that shows the value of the "name" property.
+    When submitted, it will be passed to the corresponding constructor parameter.
+  -->
+  <f:entry title="URL" field="url">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="User" field="user">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Password" field="password">
+    <f:password />
+  </f:entry>
+  <f:entry title="Title" field="title">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Body" field="body">
+    <f:textarea />
+  </f:entry>
+  <f:entry title="Publish" field="publish">
+    <f:checkbox />
+  </f:entry>
+  <f:advanced>
+    <f:entry title="Category (Int ID)" field="category" description="Use comma(,) to specify multiple values">
+      <f:textbox />
+    </f:entry>
+    <f:entry title="BasicAuth Username" field="basic_user_name">
+      <f:textbox />
+    </f:entry>
+    <f:entry title="BasicAuth Password" field="basic_password">
+      <f:password />
+    </f:entry>
+  </f:advanced>
+</j:jelly>

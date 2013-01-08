@@ -38,7 +38,6 @@ import org.kohsuke.stapler.StaplerRequest;
 public class WordPressPostArticleBuilder extends Builder {
 
     private final String url, user, password, title, body, category, basic_user_name, basic_password;
-
 	private Boolean publish;
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
