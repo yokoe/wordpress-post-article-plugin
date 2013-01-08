@@ -1,5 +1,4 @@
 package com.kreuz45.plugins;
-import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
@@ -10,19 +9,11 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
 import net.sf.json.JSONObject;
 
-import org.apache.xmlrpc.XmlRpcException;
-import org.apache.xmlrpc.client.XmlRpcClient;
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -104,62 +95,10 @@ public class WordPressPostArticleBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
-
-        listener.getLogger().println("Hello, "+url+"!");
+        WordPressArticle article = new WordPressArticle(url, user, password, title, body, category, basic_user_name, basic_password, publish);
         try {
-        	EnvVars vars = build.getEnvironment(listener);
-        	
-        	// WordPress XML-RPC API wp.newPost
-        	// http://codex.wordpress.org/XML-RPC_WordPress_API/Posts#wp.newPost
-        	XmlRpcClient client = new XmlRpcClient();
-            XmlRpcClientConfigImpl conf = new XmlRpcClientConfigImpl();
-			conf.setServerURL(new URL(url));
-			if (this.basic_user_name != null && this.basic_user_name.length() > 0 &&
-					this.basic_password != null && this.basic_password.length() > 0) {
-				conf.setBasicUserName(this.basic_user_name);
-				conf.setBasicPassword(this.basic_password);
-			}
-			
-			client.setConfig(conf);
-			
-			List params = new ArrayList();
-			params.add(1);
-			params.add(this.user);
-			params.add(this.password);
-			
-			Hashtable content = new Hashtable();
-			content.put("post_title", vars.expand(this.title));
-			content.put("post_content", vars.expand(this.body));
-			
-			if (this.publish) {
-				content.put("post_status", "publish");
-			}
-			if (this.category != null && this.category.length() > 0) {
-				Hashtable terms = new Hashtable();
-				
-				String[] categories = this.category.split(",");
-				terms.put("category", categories);
-				content.put("terms", terms);
-			}
-			
-			params.add(content);
-			
-			// 実行
-			String ret = (String) client.execute("wp.newPost", params);
-			// サーバからのレスポンスを出力
-			System.out.println("ret=" + ret);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		} catch (XmlRpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
+			return article.post(build.getEnvironment(listener));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		} catch (InterruptedException e) {
@@ -167,9 +106,6 @@ public class WordPressPostArticleBuilder extends Builder {
 			e.printStackTrace();
 			return false;
 		}
-        
-        
-        return true;
     }
 
     // Overridden for better type safety.
